@@ -411,7 +411,7 @@ table.cmp tr:last-child td{border-bottom:none}
 <!-- ============ 7 · FEED (2) — pools + keyset ============ -->
 <section class="slide">
   <div class="kicker"><span class="num">06</span><span>Algoritmo do Feed</span><span class="bar"></span></div>
-  <h1 class="title sm">Duas pools de candidatos + <span class="em">paginação keyset estável</span></h1>
+  <h1 class="title sm">De onde vêm os eventos e <span class="em">por que a ordem não embaralha</span></h1>
   <div class="slide-body">
     <div class="grid g2" style="margin-bottom:1.1vh">
       <div class="card glow"><div class="accent-t"></div>
@@ -424,11 +424,11 @@ table.cmp tr:last-child td{border-bottom:none}
       </div>
     </div>
     <div class="grid g3">
-      <div class="card"><h3 class="sm"><span class="ic">🎯</span>Pool 5× a página</h3><p><span class="mono">clamp(limit×5, 100, 300)</span> — o <b>score</b> decide quem entra, não a recência da query.</p></div>
-      <div class="card"><h3 class="sm"><span class="ic">🔖</span>Paginação keyset</h3><p>Cursor opaco <span class="mono">{score,id,t}</span>: corte por valor, não offset — scroll infinito <b>sem duplicar</b>.</p></div>
-      <div class="card"><h3 class="sm"><span class="ic">⏰</span>Dois relógios</h3><p><span class="mono">scoringNow</span> (congelado) reordena; <span class="mono">now</span> real governa elegibilidade — segurança vs. estabilidade.</p></div>
+      <div class="card"><h3 class="sm"><span class="ic">🎯</span>Buscamos muitos candidatos</h3><p>Pegamos bem mais eventos do que cabe na tela e deixamos a <b>relevância</b> escolher os melhores — não a ordem "crua" do banco.</p></div>
+      <div class="card"><h3 class="sm"><span class="ic">🔖</span>Rolar não repete</h3><p>Ao carregar mais, a lista continua de onde parou pela <b>nota</b> do evento — então nada aparece duas vezes.</p></div>
+      <div class="card"><h3 class="sm"><span class="ic">⏰</span>Ordem estável</h3><p>Quando você rola, "congelamos" o instante usado para ordenar — assim a lista <b>não se reembaralha</b> entre uma página e a próxima.</p></div>
     </div>
-    <div class="callout why" style="margin-top:1.1vh"><div class="ci">💡</div><p><span class="whyb">Por quê</span>um pool maior que a página? Para a <b>relevância (score) decidir</b> o que aparece — não a recência "crua" do banco (anti over-fetch). O <b>slot patrocinado</b> (<span class="mono">isFeatured</span>) entra na posição 1 da 1ª página e é excluído do orgânico; cache de <b>60 s</b>.</p></div>
+    <div class="callout why" style="margin-top:1.1vh"><div class="ci">💡</div><p><span class="whyb">Por quê</span> tanto cuidado com a ordem? Para o feed ser <b>relevante e consistente</b> — mostra o que importa pra você, não repete eventos e não embaralha ao rolar. Eventos em <b>destaque</b> entram no topo; o resultado fica em cache por alguns segundos.</p></div>
   </div>
   <div class="notes-data" hidden>
     Duas pools: social (rede, ignora distância) + descoberta (categoria/subcategoria preferida OU proximidade KNN). Social vem primeiro no dedupe.|
