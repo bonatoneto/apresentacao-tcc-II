@@ -522,6 +522,7 @@ table.cmp tr:last-child td{border-bottom:none}
     </div>
   </div>
   <div class="notes-data" hidden>
+    POR QUE WEBSOCKET no chat: o servidor precisa EMPURRAR dados ao vivo e nos dois sentidos — mensagem nova, "digitando", presença e recibos de entregue/lido. HTTP (request/response) não faz isso; ficar perguntando (polling) seria lento, caro e não escalaria. WebSocket é uma conexão persistente e bidirecional. Push NÃO serve para chat ao vivo (não é instantâneo, tem limite de taxa e não é bidirecional).|
     Arquitetura híbrida: regra/persistência no REST (mensagem salva = fonte da verdade); o gateway WebSocket é 'burro', só repassa eventos.|
     Por que persistir antes? Se o tempo real cair, a mensagem já está salva e o cliente recupera no próximo fetch — robusto.|
     Por que Redis Pub/Sub? Sincronizar entre instâncias: cada uma entrega só aos seus conectados; assim escala horizontalmente.|
@@ -552,6 +553,7 @@ table.cmp tr:last-child td{border-bottom:none}
     </div>
   </div>
   <div class="notes-data" hidden>
+    POR QUE WEBSOCKET nas notificações (e não só push): o WS só atua com o app ABERTO (foreground) — atualiza o sininho/badge na hora e suprime o banner duplicado do push. Com o app fechado/em background, a entrega é por PUSH (Expo), não WS. Ou seja: no chat o WS é o canal PRINCIPAL; aqui é um "plus" de tempo real com o app aberto. A fonte da verdade é a notificação persistida (REST) — nada se perde.|
     Três canais: in-app persistida (fonte da verdade) + foreground (WebSocket/Redis) + push (Expo). Best-effort e idempotente por dedupeKey.|
     14 tipos: sociais, EVENT_NEARBY, SPOT_NEARBY/JOIN/RENEWAL, promovidas.|
     Fan-out 'query invertida': índice GiST sobre users.location uma vez por evento, em lotes — em vez de N queries por usuário (padrão 'filtro na camada certa').|
