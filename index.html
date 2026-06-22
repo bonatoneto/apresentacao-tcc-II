@@ -471,7 +471,10 @@ table.cmp tr:last-child td{border-bottom:none}
     Cold-start: o app não tem catálogo. Decisão registrada: o Places JÁ tem os lugares, faltava a query. Migramos de Nearby-por-tipo para Text Search semântica — 'Eletrônica' vira 'baladas de música eletrônica', nunca 'loja de disco'.|
     Por que 2 modelos? A/B real: Sonnet ordena melhor e escreve a copy; no composer o Haiku basta e economiza ~3x. Structured output via Zod nos dois.|
     Filtro adulto por NOME (denylist) porque o Places tipa swing/strip como night_club/bar. É HARD, nunca bypassado.|
-    Resiliência: cache + quota race-safe + IA com fallback por template; sem ANTHROPIC_API_KEY degrada, não quebra.
+    Resiliência: cache + quota race-safe + IA com fallback por template; sem ANTHROPIC_API_KEY degrada, não quebra.|
+    CACHE (como entra na criação de spots): só na GERAÇÃO de sugestões (POST /spots/suggestions). Guarda o resultado JÁ PRONTO — as até 8 sugestões enriquecidas (Places + IA) — por 15 min (900s) no Redis. No cache HIT não chama Google Places nem Claude.|
+    CACHE — chave: célula geográfica (≈ raio/4, mín ~1km) + raio + intenção/categorias, SEM userId (compartilhada entre usuários da mesma região). Quem busca rolês perto do mesmo lugar reaproveita o resultado e corta custo de Places/IA.|
+    CACHE — pontos finos: a quota diária (5/25) conta MESMO no cache hit (decisão de produto); se o Places falhar, a quota NÃO é gasta. A PUBLICAÇÃO do spot (POST /spots) NÃO usa cache (grava direto no Postgres) e não há invalidação — as sugestões só expiram pelo TTL.
   </div>
 </section>
 
